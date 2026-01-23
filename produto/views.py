@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from categoria.models import Categoria
+from produto.models import Produto
+
 
 # Create your views here.
 
-def cadastrar(request):
+def cadastrar_produto(request):
     categorias = Categoria.objects.all()
     if request.method == 'POST':
         nome = request.POST.get('nome')

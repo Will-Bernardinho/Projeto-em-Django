@@ -20,5 +20,5 @@ from django.urls import path
 from cliente.views import cadastrar_cliente
 
 urlpatterns = [
-    path('cadastrar_cliente/', cadastrar_cliente, name='cadastrar_cliente' )
+    path('cadastrar_cliente/', cadastrar_cliente, name='cadastrar_cliente'),
 ]
