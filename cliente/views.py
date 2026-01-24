@@ -3,7 +3,14 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from .models import Cliente
+import requests
 
+def busca_cep(request):
+    endereco = {}
+    if request.method == 'POST':
+        cep = request.POST.get('cep')
+        url = f"https://viacep.com.br/ws/{cep}/json/"
+        response = requests.get(url)
 def cadastrar_cliente(request):
     if request.method == 'POST':
         nome = request.POST.get('nome')
