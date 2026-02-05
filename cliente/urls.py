@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from cliente.views import cadastrar_cliente
+from cliente.views import cadastrar_cliente, busca_cep
 
 urlpatterns = [
     path('cadastrar_cliente/', cadastrar_cliente, name='cadastrar_cliente'),
+    path('busca_cep/', busca_cep, name='busca_cep'),
+
 ]
