@@ -1,5 +1,7 @@
 import requests
 from django.contrib import messages
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from cliente.models import Cliente
@@ -45,15 +47,19 @@ def busca_cep(request):
 
 def cadastrar_cliente(request):
     if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
             nome = request.POST.get('nome')
             telefone = request.POST.get('telefone')
             email = request.POST.get('email')
             cep = request.POST.get('cep')
             numero = request.POST.get('numero')
             compl = request.POST.get('compl')
-            if nome and telefone and email and cep and numero and compl:
+            if username and nome and telefone and email and cep and numero and compl:
+                usuario = User.objects.create_user(username=username, password=password, email=email)
 
                 cliente = Cliente(
+                    usuario=usuario,
                     nome=nome,
                     telefone=telefone,
                     email=email,
@@ -66,4 +72,22 @@ def cadastrar_cliente(request):
                 return redirect('administrativo')
 
     return busca_cep(request)
+
+def logar(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            #MOSTRAR A SESSÃO DE USUÁRIO
+            request.session['username'] = user.username
+
+            messages.success(request, 'Bem vindo!')
+            return redirect('menucli')  # Redireciona para a página de administrador
+        else:
+            return render(request, 'login.html')
+    return render(request, 'login.html')
 

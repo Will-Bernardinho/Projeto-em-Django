@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User
 from django.db import models
 class Cliente(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=16)
     email = models.EmailField()

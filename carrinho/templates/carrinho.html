@@ -1,0 +1,29 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+{% if user.is_authenticated %}
+    <p>Você está logado como {{ user.username }}.</p>
+<h1>Carrinho</h1>
+    {% if carrinho_itens %}
+        <ul>
+            {% for item in carrinho_itens %}
+                <li>
+                    {{ item.produto.nome }} - Quantidade: {{ item.quantidade }} - Total: ${{ item.item_total }}
+                </li>
+            {% endfor %}
+        </ul>
+        <p><strong>Total: ${{ total }}</strong></p>
+    {% else %}
+        <p>Carrinho Vazio</p>
+    {% endif %}
+{% endif %}
+    <a href="{% url 'home' %}">Continuar Comprando</a>
+
+</body>
+</html>
