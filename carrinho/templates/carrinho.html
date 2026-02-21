@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,8 +22,20 @@
     {% else %}
         <p>Carrinho Vazio</p>
     {% endif %}
-{% endif %}
     <a href="{% url 'home' %}">Continuar Comprando</a>
+
+<form action="{% url 'finalizar_compra' %}" method="post">
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-success">Finalizar Compra</button>
+</form>
+
+{% else %}
+    <a href="{% url 'logar' %}">Faça Login para acesso</a>
+
+{% endif %}
+
+
 
 </body>
 </html>
