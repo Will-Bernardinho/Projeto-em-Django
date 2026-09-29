@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 from cliente.models import Cliente
 from itens_pedido.models import ItemPedido
@@ -39,15 +41,16 @@ def mostracarrinho(request):
 
     return render(request, 'carrinho.html', {'carrinho_itens': carrinho_itens, 'total': total})
 
+@login_required(login_url='logar')
+@require_POST
 def finalizar_compra(request):
 
     carrinho = request.session.get('carrinho', {})
 
     if not carrinho:
         return redirect('mostracarrinho')  # Redireciona se o carrinho estiver vazio
-    else:
-        if request.method == 'POST':
-           cliente = get_object_or_404(Cliente, usuario=request.user)
+
+    cliente = get_object_or_404(Cliente, usuario=request.user)
 
 
     data_atual = timezone.now()
