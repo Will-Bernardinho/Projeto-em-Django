@@ -16,11 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import inicio, historia, administrativo, sushi
+from .views import inicio, historia, administrativo, sushi, sashimi, temaki, sobremesas, bebidas, contato
 
 urlpatterns = [
-    path('', inicio ),
+    path('', inicio, name='home'),
     path ('historia/', historia, name ='historia'),
     path ('administrativo/', administrativo, name='administrativo'),
     path ('sushi/', sushi, name='sushi'),
+    path ('sashimi/', sashimi, name='sashimi'),
+    path ('temaki/', temaki, name='temaki'),
+    path ('sobremesas/', sobremesas, name='sobremesas'),
+    path ('bebidas/', bebidas, name='bebidas'),
+    path ('contato/', contato, name='contato'),
 ]

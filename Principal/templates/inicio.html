@@ -1,0 +1,240 @@
+{% extends 'Home.html' %}
+{% load static imagens %}
+{% block title %}SushiBom · Culinária japonesa{% endblock %}
+
+{% block content %}
+
+{# ---------- Capa ---------- #}
+<section class="capa" id="topo">
+  <div class="capa-fundo" data-parallax>
+    <img src="{% static 'principal/imagens/capa-site-2.jpg' %}" alt="Seleção de sushi do SushiBom">
+  </div>
+
+  {# Ensō: círculo zen desenhado a pincel #}
+  {% include '_enso.html' %}
+
+  <span class="vertical" aria-hidden="true">日本の味</span>
+
+  <div class="capa-texto">
+    <div class="container">
+      <p class="capa-marca">SushiBom <span>·</span> Jardim América</p>
+      <h1 class="capa-titulo">
+        <span class="mascara"><span style="--i:0">Onde o Japão</span></span>
+        <span class="mascara"><span style="--i:1">encontra o agora.</span></span>
+      </h1>
+      <div class="capa-acoes">
+        <a href="{% url 'sushi' %}" class="btn btn-shu">Ver cardápio</a>
+        <a href="{% url 'historia' %}" class="link-seta">Nossa história</a>
+      </div>
+    </div>
+  </div>
+
+  <a class="rolar" href="#cardapio" aria-label="Rolar para o cardápio"><span>rolar</span></a>
+</section>
+
+{# ---------- 01 Cardápio ---------- #}
+<section class="secao" id="cardapio">
+  <div class="container">
+    <header class="cab-secao revelar">
+      <span class="cab-num">01</span>
+      <h2>Cardápio</h2>
+      <span class="cab-linha"></span>
+    </header>
+
+    <ul class="lista-cardapio">
+      {% for cat in categorias %}
+        <li class="revelar" style="--atraso: {{ forloop.counter0 }}00ms">
+          <a href="{% url cat.rota %}" {% if cat.imagem %}data-previa="{{ cat.imagem|miniatura:800 }}" data-nome="{{ cat.nome }}" data-jp="{{ cat.jp }}"{% endif %}>
+            <span class="lc-num" aria-hidden="true">{{ cat.numeral }}</span>
+            <span class="lc-nome">{{ cat.nome }}</span>
+            <span class="lc-qtd">{% if cat.total %}{{ cat.total }} prato{{ cat.total|pluralize }}{% else %}em breve{% endif %}</span>
+            <span class="lc-jp" aria-hidden="true">{{ cat.jp }}</span>
+            {% if cat.imagem %}<img class="lc-mini" src="{{ cat.imagem|miniatura:200 }}" alt="" loading="lazy" decoding="async">{% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="previa" aria-hidden="true">
+    <div class="previa-quadro"><img alt=""></div>
+    <div class="previa-legenda"><span class="previa-nome"></span><span class="previa-jp"></span></div>
+  </div>
+</section>
+
+{# ---------- 02 Novidades ---------- #}
+{% if novidades %}
+<section class="secao secao-clara">
+  <div class="container">
+    <header class="cab-secao revelar">
+      <span class="cab-num">02</span>
+      <h2>Novidades</h2>
+      <span class="cab-linha"></span>
+    </header>
+
+    <div class="row g-5 align-items-start">
+      {% with destaque=novidades.0 %}
+      <div class="col-lg-6">
+        <article class="destaque">
+          <div class="destaque-foto revelar-clip">
+            {% if destaque.imagem %}<img src="{{ destaque.imagem|miniatura:1200 }}" alt="{{ destaque.nome }}" decoding="async">{% endif %}
+          </div>
+          <div class="destaque-info revelar">
+            <span class="etiqueta">{{ destaque.categoria.nome }}</span>
+            <h3>{{ destaque.nome }}</h3>
+            <p>{{ destaque.descricao }}</p>
+            <div class="produto-rodape">
+              <span class="preco">R$ {{ destaque.valor|floatformat:2 }}</span>
+              <form action="{% url 'addcarrinho' destaque.id %}" method="post" class="m-0">{% csrf_token %}<button type="submit" class="btn btn-sumi btn-sm">Adicionar</button></form>
+            </div>
+          </div>
+        </article>
+      </div>
+      {% endwith %}
+
+      <div class="col-lg-6">
+        {% for produto in novidades|slice:"1:" %}
+          <article class="item-h revelar" style="--atraso: {{ forloop.counter0 }}00ms">
+            <div class="item-h-foto">
+              {% if produto.imagem %}<img src="{{ produto.imagem|miniatura:400 }}" alt="{{ produto.nome }}" loading="lazy" decoding="async">{% endif %}
+            </div>
+            <div class="item-h-info">
+              <span class="etiqueta">{{ produto.categoria.nome }}</span>
+              <h3>{{ produto.nome }}</h3>
+              <p>{{ produto.descricao }}</p>
+              <div class="produto-rodape">
+                <span class="preco">R$ {{ produto.valor|floatformat:2 }}</span>
+                <form action="{% url 'addcarrinho' produto.id %}" method="post" class="m-0">{% csrf_token %}<button type="submit" class="btn btn-sumi btn-sm">Adicionar</button></form>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- 03 A casa ---------- #}
+<section class="secao">
+  <div class="container">
+    <header class="cab-secao revelar">
+      <span class="cab-num">03</span>
+      <h2>A casa</h2>
+      <span class="cab-linha"></span>
+    </header>
+
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <div class="casa-foto revelar-clip">
+          {% with t=categorias.2 %}{% if t.imagem %}<img src="{{ t.imagem|miniatura:1000 }}" alt="Temaki do SushiBom" loading="lazy" decoding="async">{% endif %}{% endwith %}
+          <span class="hanko selo" aria-hidden="true">寿</span>
+        </div>
+      </div>
+      <div class="col-lg-6 offset-lg-1 revelar">
+        <p class="casa-frase">Tradição japonesa numa linguagem contemporânea, urbana e elegante.</p>
+        <p class="casa-texto">No bairro de Jardim América, no Rio de Janeiro, o SushiBom trata a culinária japonesa com precisão e respeito, e a reinterpreta de forma criativa e leve. Ingredientes frescos, corte preciso e linhas limpas, do primeiro olhar ao último sabor.</p>
+        <a href="{% url 'historia' %}" class="link-seta link-seta-escuro">Ler nossa história</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------- Fecho ---------- #}
+<section class="fecho">
+  <div class="container">
+    <p class="fecho-frase revelar">
+      Onde o Japão encontra
+      <span class="sublinhado">o agora.
+        <svg viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path class="desenhar" pathLength="1" d="M 3 9 C 60 3 120 12 180 6 S 270 7 297 5"/>
+        </svg>
+      </span>
+    </p>
+    <div class="fecho-rodape revelar">
+      <a href="{% url 'sushi' %}" class="btn btn-sumi">Fazer meu pedido</a>
+      <span class="fecho-local">Jardim América · Rio de Janeiro</span>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 1. Revela elementos ao entrar na tela
+  var alvos = document.querySelectorAll('.revelar, .revelar-clip, .sublinhado');
+  if (!('IntersectionObserver' in window) || reduzir) {
+    alvos.forEach(function (el) { el.classList.add('visivel'); });
+  } else {
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('visivel'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    alvos.forEach(function (el) { obs.observe(el); });
+  }
+
+  // 2. Parallax suave na capa
+  var fundo = document.querySelector('[data-parallax]');
+  if (fundo && !reduzir) {
+    var pendente = false;
+    window.addEventListener('scroll', function () {
+      if (pendente) return;
+      pendente = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY;
+        if (y < 900) fundo.style.transform = 'translate3d(0,' + (y * 0.28).toFixed(1) + 'px,0)';
+        pendente = false;
+      });
+    }, { passive: true });
+  }
+
+  // 3. Foto que acompanha o cursor no índice do cardápio
+  var previa = document.querySelector('.previa');
+  var podeHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (previa && podeHover && !reduzir) {
+    var img = previa.querySelector('img');
+    var legNome = previa.querySelector('.previa-nome');
+    var legJp = previa.querySelector('.previa-jp');
+    var LARGURA = 208, ALTURA = 290; // tamanho aproximado da moldura, para mantê-la dentro da tela
+
+    function limitar(x, y) {
+      return {
+        x: Math.min(x + 24, window.innerWidth - LARGURA - 16),
+        y: Math.max(16, Math.min(y - 105, window.innerHeight - ALTURA - 16))
+      };
+    }
+    var alvo = { x: 0, y: 0 }, atual = { x: 0, y: 0 }, rodando = false;
+
+    function andar() {
+      atual.x += (alvo.x - atual.x) * 0.14;
+      atual.y += (alvo.y - atual.y) * 0.14;
+      previa.style.transform = 'translate3d(' + atual.x.toFixed(1) + 'px,' + atual.y.toFixed(1) + 'px,0)';
+      if (rodando) requestAnimationFrame(andar);
+    }
+
+    document.querySelectorAll('.lista-cardapio a[data-previa]').forEach(function (a) {
+      a.addEventListener('mouseenter', function (e) {
+        img.src = a.dataset.previa;
+        legNome.textContent = a.dataset.nome || '';
+        legJp.textContent = a.dataset.jp || '';
+        var p = limitar(e.clientX, e.clientY);
+        alvo.x = atual.x = p.x;
+        alvo.y = atual.y = p.y;
+        previa.classList.add('ativa');
+        if (!rodando) { rodando = true; requestAnimationFrame(andar); }
+      });
+      a.addEventListener('mousemove', function (e) {
+        var p = limitar(e.clientX, e.clientY);
+        alvo.x = p.x; alvo.y = p.y;
+      });
+      a.addEventListener('mouseleave', function () { previa.classList.remove('ativa'); rodando = false; });
+    });
+    document.body.classList.add('com-previa');
+  }
+})();
+</script>
+{% endblock %}

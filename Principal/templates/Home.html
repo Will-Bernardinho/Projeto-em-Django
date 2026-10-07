@@ -1,36 +1,42 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
+{% load static %}<!doctype html>
+<html lang="pt-br">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}SushiBom · Culinária japonesa{% endblock %}</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;600&family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'principal/style.css' %}">
-    <title>{% block title %} Japones {% endblock %} </title>
+    <script>document.documentElement.classList.add('js')</script>
   </head>
   <body>
-    <h1>SushiBom</h1>
+    {% block nav %}{% include 'menu.html' %}{% endblock %}
 
-    {% include 'menu.html' %}
+    {% if messages %}
+      <div class="container">
+        {% for message in messages %}
+          <div class="aviso" role="status">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-    {% block content %}
+    <main>
+    {% block content %}{% endblock %}
+    </main>
 
-    <div class="container capa">
-      <img src="{% static 'principal/imagens/capa-site-2.jpg' %}">
-    </div>
+    <footer class="rodape">
+      <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <span class="d-flex align-items-center gap-3"><span class="hanko" aria-hidden="true">寿</span>SushiBom</span>
+        <span>Jardim América · Rio de Janeiro</span>
+      </div>
+    </footer>
 
-    {% endblock %}
-
-
-
-
-
- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    {% block scripts %}{% endblock %}
   </body>
-
 </html>

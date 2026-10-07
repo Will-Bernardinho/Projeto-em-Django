@@ -1,112 +1,96 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <title>Cadastro de Cliente</title>
-</head>
-<body>
+{% extends 'Home.html' %}
+{% block title %}SushiBom · Cadastro de Cliente{% endblock %}
 
-
+{% block content %}
+<div class="container">
+  <div class="titulo-pagina">
+    <span class="jp" aria-hidden="true">登録</span>
     <h1>Cadastro de Cliente</h1>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-6">
-                <form method="post" action="{% url 'cadastrar_cliente' %}">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="username" class="col-sm-2 col-form-label">Usuário</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="username" name="username" >
-                        </div>
-                    </div>
+  </div>
 
-                     <div class="form-group row">
-                        <label for="password" class="col-sm-2 col-form-label">Senha</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                    </div>
+  <form method="post" action="{% url 'cadastrar_cliente' %}" class="painel" novalidate>
+    {% csrf_token %}
 
-                    <div class="form-group row">
-                        <label for="nome" class="col-sm-2 col-form-label">Nome</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="nome" name="nome" value="{{ nome }}">
-                        </div>
-                    </div>
+    {% if form.non_field_errors %}<div class="aviso mb-4" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
 
-                    <div class="form-group row">
-                        <label for="telefone" class="col-sm-2 col-form-label">Telefone</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="telefone" name="telefone" value="{{ telefone }}">
-                        </div>
-                    </div>
+    <div class="row g-4">
+      <div class="col-sm-6">
+        <label for="username" class="form-label">Usuário</label>
+        <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default_if_none:'' }}" autocomplete="username" maxlength="150">
+        {% for e in form.username.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-sm-6">
+        <label for="password" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="password" name="password" autocomplete="new-password">
+        {% for e in form.password.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
 
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control" id="email" name="email" value="{{ email }}">
-                        </div>
-                    </div>
+      <div class="col-12">
+        <label for="nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="nome" name="nome" value="{{ form.nome.value|default_if_none:'' }}" maxlength="100">
+        {% for e in form.nome.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-sm-6">
+        <label for="telefone" class="form-label">Telefone</label>
+        <input type="text" class="form-control" id="telefone" name="telefone" value="{{ form.telefone.value|default_if_none:'' }}" maxlength="16" autocomplete="tel">
+        {% for e in form.telefone.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-sm-6">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" autocomplete="email">
+        {% for e in form.email.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
 
-                    <div class="form-group row">
-                        <label for="cep" class="col-sm-2 col-form-label">CEP</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="cep" name="cep" value="{{ request.POST.cep }}">
-                            <button type="submit" class="btn btn-primary mt-2">Buscar Endereço</button>
-                        </div>
-                    </div>
-
-                    {% if endereco %}
-                        <h2>Endereço Completo</h2>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Logradouro</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" value="{{ endereco.logradouro }}" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Bairro</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" value="{{ endereco.bairro }}" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Cidade</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" value="{{ endereco.localidade }}" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Estado</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" value="{{ endereco.uf }}" readonly>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <div class="form-group row">
-                        <label for="num" class="col-sm-2 col-form-label">Número</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="num" name="numero" value="{{ numero }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="comp" class="col-sm-2 col-form-label">Complemento</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="comp" name="compl" value="{{ compl }}">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Cadastrar</button>
-                </form>
-            </div>
+      <div class="col-12">
+        <label for="cep" class="form-label">CEP</label>
+        <div class="d-flex gap-3 align-items-end">
+          <input type="text" class="form-control" id="cep" name="cep" value="{{ form.cep.value|default_if_none:'' }}" maxlength="9" inputmode="numeric" autocomplete="postal-code">
+          <button type="submit" formaction="{% url 'busca_cep' %}" formnovalidate class="btn btn-contorno btn-sm flex-shrink-0">Buscar</button>
         </div>
+        {% for e in form.cep.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-</body>
-</html>
+    {% if endereco %}
+      <h2 class="subtitulo">Endereço</h2>
+      {% if endereco.erro %}
+        <div class="aviso" role="alert">{{ endereco.erro }}</div>
+      {% else %}
+        <div class="row g-4">
+          <div class="col-12">
+            <label class="form-label">Logradouro</label>
+            <input type="text" class="form-control" value="{{ endereco.logradouro }}" readonly>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Bairro</label>
+            <input type="text" class="form-control" value="{{ endereco.bairro }}" readonly>
+          </div>
+          <div class="col-sm-4">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-control" value="{{ endereco.localidade }}" readonly>
+          </div>
+          <div class="col-sm-2">
+            <label class="form-label">UF</label>
+            <input type="text" class="form-control" value="{{ endereco.uf }}" readonly>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="row g-4 mt-0">
+      <div class="col-sm-4">
+        <label for="num" class="form-label">Número</label>
+        <input type="text" class="form-control" id="num" name="numero" value="{{ form.numero.value|default_if_none:'' }}" inputmode="numeric">
+        {% for e in form.numero.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-sm-8">
+        <label for="comp" class="form-label">Complemento <span class="opcional">(opcional)</span></label>
+        <input type="text" class="form-control" id="comp" name="compl" value="{{ form.compl.value|default_if_none:'' }}" maxlength="28">
+        {% for e in form.compl.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-sumi w-100 mt-5">Cadastrar</button>
+  </form>
+</div>
+{% endblock %}

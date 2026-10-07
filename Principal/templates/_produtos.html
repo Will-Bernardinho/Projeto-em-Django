@@ -1,0 +1,17 @@
+{% comment %}Lista de produtos de uma categoria. Uso: {% include '_produtos.html' with titulo='Sushi' jp='寿司' %}{% endcomment %}
+<div class="container">
+  <div class="titulo-pagina">
+    {% if jp %}<span class="jp" aria-hidden="true">{{ jp }}</span>{% endif %}
+    <h1>{{ titulo }}</h1>
+  </div>
+
+  {% if produtos %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5 pb-5">
+      {% for produto in produtos %}
+        <div class="col">{% include '_card_produto.html' %}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="vazio">Em breve novidades nesta seção.</p>
+  {% endif %}
+</div>

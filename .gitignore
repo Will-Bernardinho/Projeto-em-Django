@@ -1,0 +1,45 @@
+# ---------- Python: gerados automaticamente ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ---------- Ambientes virtuais ----------
+venv/
+.venv/
+env/
+
+# ---------- Segredos e configuração local ----------
+.env
+.env.*
+*.pem
+
+# ---------- Banco de dados ----------
+# O db.sqlite3 é mantido no repositório (decisão do projeto) e NÃO é ignorado.
+# Só arquivos temporários do SQLite ficam de fora:
+db.sqlite3-journal
+
+# ---------- Arquivos gerados pelo projeto ----------
+# Miniaturas: criadas sob demanda pelo filtro |miniatura a partir das fotos originais
+app/media/produtos/miniaturas/
+# Resultado de `manage.py collectstatic` (produção)
+staticfiles/
+# Logs
+*.log
+
+# ---------- Arquivos sem uso no projeto ----------
+# Script de exemplo do PyCharm: nada o importa nem o executa
+main.py
+
+# ---------- Editores e sistema operacional ----------
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Ferramentas locais ----------
+.claude/
