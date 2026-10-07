@@ -161,14 +161,24 @@ class FinalizarCompraTests(BaseCarrinho):
         self.assertEqual(self.client.post(reverse('finalizar_compra')).status_code, 302)
         self.assertEqual(Pedido.objects.count(), 0)
 
-    def test_usuario_sem_cadastro_de_cliente_recebe_aviso_e_nao_erro_500(self):
-        sem_cadastro = User.objects.create_user('sem', password='Sushi-forte-2026')
+    def test_conta_sem_cadastro_de_cliente_compra_normalmente(self):
+        """Ex.: usuário criado no Django Admin: ganha um cadastro mínimo e o pedido é feito."""
+        sem_cadastro = User.objects.create_user('sem', password='1234')
+        self.assertFalse(Cliente.objects.filter(usuario=sem_cadastro).exists())
         self.client.force_login(sem_cadastro)
         self.adicionar(self.p1)
         resposta = self.client.post(reverse('finalizar_compra'), follow=True)
-        self.assertEqual(resposta.status_code, 200)
-        self.assertContains(resposta, 'não tem cadastro de cliente')
-        self.assertEqual(Pedido.objects.count(), 0)
+        self.assertContains(resposta, 'Pedido realizado')
+        pedido = Pedido.objects.get()
+        self.assertEqual(pedido.cliente.usuario, sem_cadastro)
+        self.assertEqual(pedido.cliente.nome, 'sem')
+
+    def test_conta_nova_criada_pelo_cadastro_simples_consegue_comprar(self):
+        self.client.post(reverse('cadastrar_cliente'), {'username': 'novo', 'password': '1234'})
+        self.adicionar(self.p2)
+        self.client.post(reverse('finalizar_compra'))
+        pedido = Pedido.objects.get()
+        self.assertEqual((pedido.cliente.usuario.username, pedido.valor_total), ('novo', Decimal('30.00')))
 
     def test_falha_no_meio_nao_deixa_pedido_pela_metade(self):
         self.client.force_login(self.usuario)

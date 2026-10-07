@@ -1,96 +1,105 @@
 {% extends 'Home.html' %}
-{% block title %}SushiBom · Cadastro de Cliente{% endblock %}
+{% block title %}SushiBom · Criar conta{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="titulo-pagina">
     <span class="jp" aria-hidden="true">登録</span>
-    <h1>Cadastro de Cliente</h1>
+    <h1>Criar conta</h1>
   </div>
 
   <form method="post" action="{% url 'cadastrar_cliente' %}" class="painel" novalidate>
     {% csrf_token %}
 
-    {% if form.non_field_errors %}<div class="aviso mb-4" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+    <p class="text-center small mb-4" style="color: var(--nezumi)">Só precisa de um usuário e uma senha.</p>
 
-    <div class="row g-4">
-      <div class="col-sm-6">
-        <label for="username" class="form-label">Usuário</label>
-        <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default_if_none:'' }}" autocomplete="username" maxlength="150">
-        {% for e in form.username.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-      <div class="col-sm-6">
-        <label for="password" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="password" name="password" autocomplete="new-password">
-        {% for e in form.password.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-
-      <div class="col-12">
-        <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control" id="nome" name="nome" value="{{ form.nome.value|default_if_none:'' }}" maxlength="100">
-        {% for e in form.nome.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-      <div class="col-sm-6">
-        <label for="telefone" class="form-label">Telefone</label>
-        <input type="text" class="form-control" id="telefone" name="telefone" value="{{ form.telefone.value|default_if_none:'' }}" maxlength="16" autocomplete="tel">
-        {% for e in form.telefone.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-      <div class="col-sm-6">
-        <label for="email" class="form-label">E-mail</label>
-        <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" autocomplete="email">
-        {% for e in form.email.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-
-      <div class="col-12">
-        <label for="cep" class="form-label">CEP</label>
-        <div class="d-flex gap-3 align-items-end">
-          <input type="text" class="form-control" id="cep" name="cep" value="{{ form.cep.value|default_if_none:'' }}" maxlength="9" inputmode="numeric" autocomplete="postal-code">
-          <button type="submit" formaction="{% url 'busca_cep' %}" formnovalidate class="btn btn-contorno btn-sm flex-shrink-0">Buscar</button>
-        </div>
-        {% for e in form.cep.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
+    <div class="mb-4">
+      <label for="username" class="form-label">Usuário</label>
+      <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default_if_none:'' }}" autocomplete="username" maxlength="150" required autofocus>
+      {% for e in form.username.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
     </div>
 
-    {% if endereco %}
-      <h2 class="subtitulo">Endereço</h2>
-      {% if endereco.erro %}
-        <div class="aviso" role="alert">{{ endereco.erro }}</div>
-      {% else %}
-        <div class="row g-4">
-          <div class="col-12">
-            <label class="form-label">Logradouro</label>
-            <input type="text" class="form-control" value="{{ endereco.logradouro }}" readonly>
-          </div>
-          <div class="col-sm-6">
-            <label class="form-label">Bairro</label>
-            <input type="text" class="form-control" value="{{ endereco.bairro }}" readonly>
-          </div>
-          <div class="col-sm-4">
-            <label class="form-label">Cidade</label>
-            <input type="text" class="form-control" value="{{ endereco.localidade }}" readonly>
-          </div>
-          <div class="col-sm-2">
-            <label class="form-label">UF</label>
-            <input type="text" class="form-control" value="{{ endereco.uf }}" readonly>
-          </div>
+    <div class="mb-4">
+      <label for="password" class="form-label">Senha</label>
+      <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" required>
+      {% for e in form.password.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+    </div>
+
+    {# Contato e endereço: opcionais. Abre sozinho quando já há algo preenchido, erro ou endereço buscado. #}
+    <details class="opcionais mb-4" {% if abrir_opcionais %}open{% endif %}>
+      <summary>Contato e endereço <span class="opcional">(opcional)</span></summary>
+
+      <div class="row g-4 mt-1">
+        <div class="col-12">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" value="{{ form.nome.value|default_if_none:'' }}" maxlength="100" autocomplete="name">
+          {% for e in form.nome.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
         </div>
+        <div class="col-sm-6">
+          <label for="telefone" class="form-label">Telefone</label>
+          <input type="text" class="form-control" id="telefone" name="telefone" value="{{ form.telefone.value|default_if_none:'' }}" maxlength="16" autocomplete="tel">
+          {% for e in form.telefone.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-sm-6">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" autocomplete="email">
+          {% for e in form.email.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-12">
+          <label for="cep" class="form-label">CEP</label>
+          <div class="d-flex gap-3 align-items-end">
+            <input type="text" class="form-control" id="cep" name="cep" value="{{ form.cep.value|default_if_none:'' }}" maxlength="9" inputmode="numeric" autocomplete="postal-code">
+            <button type="submit" formaction="{% url 'busca_cep' %}" formnovalidate class="btn btn-contorno btn-sm flex-shrink-0">Buscar</button>
+          </div>
+          {% for e in form.cep.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+
+      {% if endereco %}
+        <h2 class="subtitulo">Endereço</h2>
+        {% if endereco.erro %}
+          <div class="aviso" role="alert">{{ endereco.erro }}</div>
+        {% else %}
+          <div class="row g-4">
+            <div class="col-12">
+              <label class="form-label">Logradouro</label>
+              <input type="text" class="form-control" value="{{ endereco.logradouro }}" readonly>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">Bairro</label>
+              <input type="text" class="form-control" value="{{ endereco.bairro }}" readonly>
+            </div>
+            <div class="col-sm-4">
+              <label class="form-label">Cidade</label>
+              <input type="text" class="form-control" value="{{ endereco.localidade }}" readonly>
+            </div>
+            <div class="col-sm-2">
+              <label class="form-label">UF</label>
+              <input type="text" class="form-control" value="{{ endereco.uf }}" readonly>
+            </div>
+          </div>
+        {% endif %}
       {% endif %}
-    {% endif %}
 
-    <div class="row g-4 mt-0">
-      <div class="col-sm-4">
-        <label for="num" class="form-label">Número</label>
-        <input type="text" class="form-control" id="num" name="numero" value="{{ form.numero.value|default_if_none:'' }}" inputmode="numeric">
-        {% for e in form.numero.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+      <div class="row g-4 mt-1">
+        <div class="col-sm-4">
+          <label for="num" class="form-label">Número</label>
+          <input type="text" class="form-control" id="num" name="numero" value="{{ form.numero.value|default_if_none:'' }}" inputmode="numeric">
+          {% for e in form.numero.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-sm-8">
+          <label for="comp" class="form-label">Complemento</label>
+          <input type="text" class="form-control" id="comp" name="compl" value="{{ form.compl.value|default_if_none:'' }}" maxlength="28">
+          {% for e in form.compl.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
+        </div>
       </div>
-      <div class="col-sm-8">
-        <label for="comp" class="form-label">Complemento <span class="opcional">(opcional)</span></label>
-        <input type="text" class="form-control" id="comp" name="compl" value="{{ form.compl.value|default_if_none:'' }}" maxlength="28">
-        {% for e in form.compl.errors %}<div class="erro-campo">{{ e }}</div>{% endfor %}
-      </div>
-    </div>
+    </details>
 
-    <button type="submit" class="btn btn-sumi w-100 mt-5">Cadastrar</button>
+    <button type="submit" class="btn btn-sumi w-100 mt-2">Criar conta</button>
+    <p class="text-center mt-4 mb-0 small">
+      Já tem conta? <a href="{% url 'logar' %}" class="text-decoration-underline">Entrar</a>
+    </p>
   </form>
 </div>
 {% endblock %}

@@ -857,6 +857,27 @@ a { text-decoration: none; transition: color .2s ease; }
     box-shadow: 0 1px 0 var(--shu);
 }
 
+/* Seção opcional do cadastro */
+.opcionais { border-top: 1px solid var(--linha); padding-top: 1rem; }
+
+.opcionais summary {
+    cursor: pointer;
+    font-size: .8rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--sumi);
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: .6rem;
+}
+
+.opcionais summary::-webkit-details-marker { display: none; }
+.opcionais summary::after { content: "+"; margin-left: auto; font-size: 1.2rem; color: var(--shu); transition: transform .3s var(--suave); }
+.opcionais[open] summary::after { transform: rotate(45deg); }
+.opcionais summary:hover { color: var(--shu); }
+
 .erro-campo { color: var(--shu); font-size: .82rem; margin-top: .35rem; }
 .opcional { text-transform: none; letter-spacing: 0; font-size: .8em; }
 

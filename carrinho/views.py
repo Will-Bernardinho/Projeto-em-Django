@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
-from cliente.models import Cliente
+from cliente.models import garantir_cliente
 from itens_pedido.models import ItemPedido
 from pedido.models import Pedido
 from produto.models import Produto
@@ -87,10 +87,7 @@ def finalizar_compra(request):
     if not itens:
         return redirect('mostracarrinho')
 
-    cliente = Cliente.objects.filter(usuario=request.user).first()
-    if cliente is None:
-        messages.error(request, 'Sua conta não tem cadastro de cliente. Peça ajuda ao restaurante para finalizar o pedido.')
-        return redirect('mostracarrinho')
+    cliente = garantir_cliente(request.user)  # contas sem cadastro (ex.: criadas no admin) ganham um mínimo
 
     with transaction.atomic():  # o pedido é gravado inteiro ou não é gravado
         pedido = Pedido.objects.create(cliente=cliente, data_pedido=timezone.now(), valor_total=total)

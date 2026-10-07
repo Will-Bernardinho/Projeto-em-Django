@@ -6,34 +6,51 @@ from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
-from cliente.models import Cliente
-
-DADOS_VALIDOS = {
-    'username': 'maria', 'password': 'Sushi-forte-2026', 'nome': 'Maria Silva',
-    'telefone': '(21) 99999-0000', 'email': 'maria@example.com',
-    'cep': '21240-430', 'numero': '100', 'compl': 'Apto 2',
-}
+from cliente.admin import ClienteAdminForm
+from cliente.models import Cliente, garantir_cliente
 
 
 class CadastroClienteTests(TestCase):
     def setUp(self):
         cache.clear()
 
-    def _cadastrar(self, **mudancas):
-        return self.client.post(reverse('cadastrar_cliente'), {**DADOS_VALIDOS, **mudancas})
+    def _cadastrar(self, **dados):
+        return self.client.post(reverse('cadastrar_cliente'), {'username': 'maria', 'password': '1234', **dados})
 
-    def test_cadastro_valido_cria_usuario_e_cliente_e_ja_loga(self):
+    def test_so_usuario_e_senha_sao_obrigatorios_e_o_resto_continua_disponivel(self):
+        html = self.client.get(reverse('cadastrar_cliente')).content.decode()
+        for campo in ('nome', 'telefone', 'email', 'cep', 'numero', 'compl'):  # tudo do projeto original segue lá
+            self.assertIn(f'name="{campo}"', html)
+        self.assertIn('Buscar', html)  # a consulta de CEP continua na tela
+        import re
+        obrigatorios = set(re.findall(r'<input[^>]*name="(\w+)"[^>]*\brequired\b', html))
+        self.assertEqual(obrigatorios, {'username', 'password'})
+
+    def test_cadastro_so_com_usuario_e_senha_cria_conta_e_ja_loga(self):
         resposta = self._cadastrar()
         self.assertRedirects(resposta, reverse('home'), fetch_redirect_response=False)
         usuario = User.objects.get(username='maria')
-        self.assertTrue(usuario.check_password('Sushi-forte-2026'))
-        self.assertEqual(Cliente.objects.get(usuario=usuario).nome, 'Maria Silva')
+        self.assertTrue(usuario.check_password('1234'))
         self.assertEqual(int(self.client.session['_auth_user_id']), usuario.pk)
         self.assertFalse(usuario.is_staff)  # cadastro público nunca cria funcionário
 
-    def test_complemento_e_opcional(self):
-        self._cadastrar(compl='')
-        self.assertTrue(Cliente.objects.filter(usuario__username='maria').exists())
+    def test_cadastro_cria_cliente_minimo_sem_endereco(self):
+        self._cadastrar()
+        cliente = Cliente.objects.get(usuario__username='maria')
+        self.assertEqual((cliente.nome, cliente.telefone, cliente.email, cliente.cep, cliente.numero, cliente.compl),
+                         ('maria', '', '', '', 0, ''))
+
+    def test_senhas_simples_sao_aceitas(self):
+        for i, senha in enumerate(['1234', 'abcd', 'senha']):
+            with self.subTest(senha=senha):
+                self.client.post(reverse('sair'))
+                self._cadastrar(username=f'user{i}', password=senha)
+                self.assertTrue(User.objects.filter(username=f'user{i}').exists())
+
+    def test_senha_muito_curta_e_recusada(self):
+        resposta = self._cadastrar(password='123')
+        self.assertContains(resposta, 'pelo menos 4 caracteres')
+        self.assertFalse(User.objects.filter(username='maria').exists())
 
     def test_usuario_duplicado_mostra_erro_em_vez_de_500(self):
         User.objects.create_user('Maria', password='x')
@@ -43,32 +60,40 @@ class CadastroClienteTests(TestCase):
         self.assertEqual(User.objects.filter(username__iexact='maria').count(), 1)
         self.assertEqual(Cliente.objects.count(), 0)
 
-    def test_senha_fraca_e_recusada(self):
-        for senha in ['12345678', 'curta', 'password', 'maria1234']:
-            with self.subTest(senha=senha):
-                resposta = self._cadastrar(password=senha)
-                self.assertEqual(resposta.status_code, 200)
-                self.assertFalse(User.objects.filter(username='maria').exists())
+    def test_usuario_invalido_e_campo_ausente_nao_geram_500(self):
+        for dados in [{'username': 'com espaço'}, {'username': '<script>'}, {'username': ''}, {'password': ''}]:
+            with self.subTest(dados=dados):
+                self.assertEqual(self._cadastrar(**dados).status_code, 200)
+        self.assertEqual(self.client.post(reverse('cadastrar_cliente'), {}).status_code, 200)
+        self.assertEqual(User.objects.count(), 0)
 
-    def test_campos_invalidos_nao_criam_nada(self):
-        casos = {'cep': ['abc', '123', '../../etc'], 'email': ['sem-arroba'], 'numero': ['0', 'x', '-4'],
-                 'nome': [''], 'telefone': ['1' * 40], 'username': ['com espaço', '<script>']}
-        for campo, valores in casos.items():
-            for valor in valores:
-                with self.subTest(campo=campo, valor=valor):
-                    resposta = self._cadastrar(**{campo: valor})
-                    self.assertEqual(resposta.status_code, 200)
-                    self.assertEqual(User.objects.count(), 0)
-
-    def test_campo_ausente_nao_gera_500(self):
-        dados = {k: v for k, v in DADOS_VALIDOS.items() if k != 'username'}
-        self.assertEqual(self.client.post(reverse('cadastrar_cliente'), dados).status_code, 200)
-
-    def test_falha_ao_salvar_cliente_desfaz_o_usuario(self):
-        with patch('cliente.views.Cliente.objects.create', side_effect=RuntimeError('falha')):
+    def test_falha_ao_criar_cliente_desfaz_o_usuario(self):
+        from unittest.mock import patch
+        with patch('cliente.views.garantir_cliente', side_effect=RuntimeError('falha')):
             with self.assertRaises(RuntimeError):
                 self._cadastrar()
         self.assertFalse(User.objects.filter(username='maria').exists())  # transação revertida
+
+    def test_dados_opcionais_informados_sao_salvos(self):
+        self._cadastrar(nome='Maria Silva', telefone='(21) 99999-0000', email='maria@example.com',
+                        cep='21240-430', numero='100', compl='Apto 2')
+        cliente = Cliente.objects.get(usuario__username='maria')
+        self.assertEqual((cliente.nome, cliente.telefone, cliente.email, cliente.cep, cliente.numero, cliente.compl),
+                         ('Maria Silva', '(21) 99999-0000', 'maria@example.com', '21240-430', 100, 'Apto 2'))
+        self.assertEqual(User.objects.get(username='maria').email, 'maria@example.com')
+
+    def test_dados_opcionais_invalidos_sao_recusados_e_nada_e_criado(self):
+        casos = {'cep': ['abc', '123', '../../etc'], 'email': ['sem-arroba'], 'numero': ['x', '-4'],
+                 'telefone': ['1' * 40], 'nome': ['a' * 101], 'compl': ['a' * 29]}
+        for campo, valores in casos.items():
+            for valor in valores:
+                with self.subTest(campo=campo, valor=valor):
+                    self.assertEqual(self._cadastrar(**{campo: valor}).status_code, 200)
+                    self.assertEqual(User.objects.count(), 0)
+
+    def test_secao_opcional_abre_sozinha_quando_ha_erro(self):
+        resposta = self._cadastrar(cep='abc')
+        self.assertContains(resposta, '<details class="opcionais mb-4" open>', html=False)
 
     def test_nome_com_html_e_escapado(self):
         resposta = self._cadastrar(nome='<script>alert(1)</script>', cep='x')
@@ -76,6 +101,8 @@ class CadastroClienteTests(TestCase):
 
 
 class BuscaCepTests(TestCase):
+    """A consulta de CEP vem do projeto original e foi mantida (com validação do formato e timeout)."""
+
     def _post(self, **dados):
         return self.client.post(reverse('busca_cep'), {'cep': '21240-430', 'username': 'joao', **dados})
 
@@ -84,12 +111,13 @@ class BuscaCepTests(TestCase):
         resposta_viacep.json.return_value = {'logradouro': 'Rua das Flores', 'bairro': 'Jardim América',
                                              'localidade': 'Rio de Janeiro', 'uf': 'RJ'}
         with patch('cliente.views.requests.get', return_value=resposta_viacep) as get:
-            resposta = self._post(**DADOS_VALIDOS)
+            resposta = self._post(nome='João', numero='10')
         self.assertContains(resposta, 'Rua das Flores')
-        self.assertContains(resposta, 'value="maria"')  # mantém o que já foi digitado
+        self.assertContains(resposta, 'value="joao"')  # mantém o que já foi digitado
+        self.assertContains(resposta, 'value="João"')
+        self.assertContains(resposta, '<details class="opcionais mb-4" open>')  # seção já aberta com o endereço
         self.assertEqual(User.objects.count(), 0)  # "Buscar" nunca cadastra
-        url = get.call_args.args[0]
-        self.assertEqual(url, 'https://viacep.com.br/ws/21240430/json/')  # só dígitos na URL
+        self.assertEqual(get.call_args.args[0], 'https://viacep.com.br/ws/21240430/json/')  # só dígitos na URL
         self.assertEqual(get.call_args.kwargs['timeout'], 5)
 
     def test_cep_malformado_nem_chega_a_consultar_o_servico(self):
@@ -115,6 +143,36 @@ class BuscaCepTests(TestCase):
             with self.subTest(texto=texto), patch('cliente.views.requests.get', return_value=resposta_falsa):
                 self.assertContains(self._post(), texto)
 
+    def test_sem_cep_so_reexibe_o_formulario(self):
+        with patch('cliente.views.requests.get') as get:
+            self.assertEqual(self._post(cep='').status_code, 200)
+            get.assert_not_called()
+
+
+class GarantirClienteTests(TestCase):
+    def test_cria_cadastro_minimo_uma_unica_vez(self):
+        usuario = User.objects.create_user('ana', password='1234', email='ana@example.com')
+        primeiro = garantir_cliente(usuario)
+        segundo = garantir_cliente(usuario)
+        self.assertEqual(primeiro.pk, segundo.pk)
+        self.assertEqual(Cliente.objects.count(), 1)
+        self.assertEqual((primeiro.nome, primeiro.email, primeiro.numero), ('ana', 'ana@example.com', 0))
+
+    def test_nao_sobrescreve_cadastro_completo_existente(self):
+        usuario = User.objects.create_user('bia', password='1234')
+        Cliente.objects.create(usuario=usuario, nome='Beatriz', telefone='1', email='b@x.com', cep='21240-430',
+                               numero=7, compl='casa')
+        self.assertEqual(garantir_cliente(usuario).nome, 'Beatriz')
+
+
+class ClienteAdminTests(TestCase):
+    def test_admin_aceita_cliente_sem_endereco(self):
+        usuario = User.objects.create_user('caio', password='1234')
+        form = ClienteAdminForm(data={'usuario': usuario.pk})
+        self.assertTrue(form.is_valid(), form.errors)
+        cliente = form.save()
+        self.assertEqual((cliente.nome, cliente.cep, cliente.numero), ('', '', 0))  # numero nunca vira NULL
+
 
 class LoginTests(TestCase):
     @classmethod
@@ -131,6 +189,10 @@ class LoginTests(TestCase):
         resposta = self._login()
         self.assertRedirects(resposta, reverse('home'), fetch_redirect_response=False)
         self.assertEqual(int(self.client.session['_auth_user_id']), self.usuario.pk)
+
+    def test_login_guarda_o_username_na_sessao_como_no_projeto_original(self):
+        self._login()
+        self.assertEqual(self.client.session['username'], 'ana')
 
     def test_login_invalido_nao_revela_qual_campo_errou(self):
         for dados in [{'username': 'ana', 'password': 'errada'}, {'username': 'ninguem', 'password': 'x'}]:
