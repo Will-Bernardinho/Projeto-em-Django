@@ -1,0 +1,19 @@
+{% load imagens %}
+<article class="produto">
+  <div class="produto-foto">
+    {% if produto.imagem %}
+      <img src="{{ produto.imagem|miniatura:800 }}" alt="{{ produto.nome }}" loading="lazy" decoding="async">
+    {% endif %}
+  </div>
+  <div class="produto-corpo">
+    <h2 class="produto-nome">{{ produto.nome }}</h2>
+    <p class="produto-desc">{{ produto.descricao }}</p>
+    <div class="produto-rodape">
+      <span class="preco">R$ {{ produto.valor|floatformat:2 }}</span>
+      <form action="{% url 'addcarrinho' produto.id %}" method="post" class="m-0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sumi btn-sm">Adicionar</button>
+      </form>
+    </div>
+  </div>
+</article>

@@ -1,41 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'Home.html' %}
+{% block title %}SushiBom · Carrinho{% endblock %}
 
+{% block content %}
+<div class="container pb-5">
+  <div class="titulo-pagina">
+    <span class="jp" aria-hidden="true">買物</span>
+    <h1>Carrinho</h1>
+  </div>
 
-{% if user.is_authenticated %}
-    <p>Você está logado como {{ user.username }}.</p>
-<h1>Carrinho</h1>
-    {% if carrinho_itens %}
-        <ul>
-            {% for item in carrinho_itens %}
-                <li>
-                    {{ item.produto.nome }} - Quantidade: {{ item.quantidade }} - Total: ${{ item.item_total }}
-                </li>
-            {% endfor %}
-        </ul>
-        <p><strong>Total: ${{ total }}</strong></p>
-    {% else %}
-        <p>Carrinho Vazio</p>
-    {% endif %}
-    <a href="{% url 'home' %}">Continuar Comprando</a>
+  {% if carrinho_itens %}
+    <div class="table-responsive">
+      <table class="tabela-carrinho">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th class="text-center">Qtd.</th>
+            <th class="text-end">Subtotal</th>
+            <th><span class="visually-hidden">Remover</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in carrinho_itens %}
+            <tr>
+              <td>{{ item.produto.nome }}</td>
+              <td class="text-center valor">{{ item.quantidade }}</td>
+              <td class="text-end valor">R$ {{ item.item_total|floatformat:2 }}</td>
+              <td class="text-end">
+                <form action="{% url 'removercarrinho' item.produto.id %}" method="post" class="m-0">
+                  {% csrf_token %}
+                  <button type="submit" class="remover" aria-label="Remover {{ item.produto.nome }} do carrinho" title="Remover">&times;</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-<form action="{% url 'finalizar_compra' %}" method="post">
-    {% csrf_token %}
+    <div class="total">
+      <span>Total</span>
+      <strong>R$ {{ total|floatformat:2 }}</strong>
+    </div>
 
-    <button type="submit" class="btn btn-success">Finalizar Compra</button>
-</form>
+    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mt-3">
+      <a href="{% url 'sushi' %}" class="btn btn-contorno">Continuar comprando</a>
 
-{% else %}
-    <a href="{% url 'logar' %}">Faça Login para acesso</a>
-
-{% endif %}
-
-
-
-</body>
-</html>
+      {% if user.is_authenticated %}
+        <form action="{% url 'finalizar_compra' %}" method="post" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sumi">Finalizar compra</button>
+        </form>
+      {% else %}
+        <a href="{% url 'logar' %}" class="btn btn-sumi">Entrar para finalizar</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="vazio">Seu carrinho está vazio.</p>
+    <div class="text-center"><a href="{% url 'sushi' %}" class="btn btn-contorno">Ver cardápio</a></div>
+  {% endif %}
+</div>
+{% endblock %}

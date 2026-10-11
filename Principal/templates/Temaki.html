@@ -1,28 +1,6 @@
 {% extends 'Home.html' %}
-{% block title %} Japonês - Sushi {% endblock %}
+{% block title %}SushiBom · Temaki{% endblock %}
 
 {% block content %}
-
-<div class="container">
-
-<h2> Temaki's </h2>
-    <div class="row">
-{% for produto in produtos %}
-
-        <div class="col-md-4">
-  <div class="card" style="width: 18rem;">
-      <img src="{{produto.imagem.url}}" class="card-img-top" alt="...">
-      <div class="card-body">
-       <h5 class="card-title">{{produto.nome}}</h5>
-       <p class="card-text">{{produto.descricao}}</p>
-        <p class="card-text">{{produto.valor}}</p>
-       <a href="#" class="btn btn-primary">Comprar</a>
-      </div>
-</div>
-        </div>
-
-{% endfor %}
-    </div>
-</div>
-
+{% include '_produtos.html' with titulo='Temaki' jp='手巻' %}
 {% endblock %}

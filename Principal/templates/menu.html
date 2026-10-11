@@ -1,36 +1,56 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<header class="topo">
+  <nav class="navbar navbar-expand-lg p-0">
+    <div class="container">
+      <a class="navbar-brand marca m-0" href="{% url 'home' %}">
+        <span class="hanko" aria-hidden="true">寿</span>SUSHIBOM
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'historia' %}">Nossa História</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Cardápio
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'sushi' %}">Sushi</a>
-          <a class="dropdown-item" href="{% url 'sashimi' %}">Sashimi</a>
-          <a class="dropdown-item" href="{% url 'temaki' %}">Temaki</a>
-            <a class="dropdown-item" href="#">Diversos</a>
-            <a class="dropdown-item" href="{% url 'sobremesas' %}">Sobremesas</a>
-            <a class="dropdown-item" href="{% url 'bebidas' %}">Bebidas</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'contato' %}">Contatos</a>
-      </li>
-    </ul>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav mx-lg-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'historia' %}">Nossa História</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="menuCardapio" role="button" data-bs-toggle="dropdown" aria-expanded="false">Cardápio</a>
+            <ul class="dropdown-menu" aria-labelledby="menuCardapio">
+              <li><a class="dropdown-item" href="{% url 'sushi' %}">Sushi</a></li>
+              <li><a class="dropdown-item" href="{% url 'sashimi' %}">Sashimi</a></li>
+              <li><a class="dropdown-item" href="{% url 'temaki' %}">Temaki</a></li>
+              <li><a class="dropdown-item" href="{% url 'sobremesas' %}">Sobremesas</a></li>
+              <li><a class="dropdown-item" href="{% url 'bebidas' %}">Bebidas</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contato' %}">Contatos</a>
+          </li>
+        </ul>
 
-        <button class="btn btn-outline-success my-2 my-sm-0">Entrar</button>
-     <a href="{% url 'administrativo' %}"> <button class="btn btn-outline-success my-2 my-sm-0">Adm</button></a>
-  </div>
-</nav>
+        <ul class="navbar-nav align-items-lg-center">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'mostracarrinho' %}">Carrinho{% if request.session.carrinho %} ({{ request.session.carrinho|length }}){% endif %}</a>
+          </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <form method="post" action="{% url 'sair' %}" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-contorno btn-sm ms-lg-2">Sair</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="btn btn-contorno btn-sm ms-lg-2" href="{% url 'logar' %}">Entrar</a>
+            </li>
+          {% endif %}
+          {% if user.is_staff %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'administrativo' %}">Adm</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
