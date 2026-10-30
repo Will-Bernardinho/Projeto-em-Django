@@ -20,6 +20,99 @@
     <p>Mais do que um novo endereço gastronômico, o SushiBom surge como um ponto de encontro entre tradição e inovação. Um restaurante japonês moderno, atrativo e autêntico, que chega a Jardim América com a proposta de elevar a experiência japonesa no Rio de Janeiro.</p>
 
     <p class="assinatura">Onde o Japão encontra o agora.</p>
+    <!-- Depoimentos de clientes -->
+<section class="depoimentos" id="depoimentos">
+  <div class="depoimentos__container">
+    <h2 class="depoimentos__titulo">
+      <span class="depoimentos__numero">04</span> Depoimentos
+    </h2>
+
+    <div class="depoimentos__grade">
+      <figure class="depoimento">
+        <div class="depoimento__estrelas" aria-label="5 de 5 estrelas">★★★★★</div>
+        <blockquote class="depoimento__texto">
+          Peixe fresco e corte impecável. O sashimi de atum é o melhor que já comi no bairro.
+        </blockquote>
+        <figcaption class="depoimento__autor">Mariana S. · Jardim América</figcaption>
+      </figure>
+
+      <figure class="depoimento">
+        <div class="depoimento__estrelas" aria-label="5 de 5 estrelas">★★★★★</div>
+        <blockquote class="depoimento__texto">
+          O pedido chegou rápido e bem embalado. O temaki ainda estava crocante.
+        </blockquote>
+        <figcaption class="depoimento__autor">Rafael C. · Rio de Janeiro</figcaption>
+      </figure>
+
+      <figure class="depoimento">
+        <div class="depoimento__estrelas" aria-label="4 de 5 estrelas">★★★★☆</div>
+        <blockquote class="depoimento__texto">
+          Ambiente elegante e atendimento atencioso. A sobremesa foi uma ótima surpresa.
+        </blockquote>
+        <figcaption class="depoimento__autor">Camila R. · Jardim América</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .depoimentos {
+    padding: 96px 24px;
+    background: #f7f4ee;
+  }
+  .depoimentos__container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .depoimentos__titulo {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 0 0 56px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 40px;
+    font-weight: 400;
+    color: #1a1a1a;
+  }
+  .depoimentos__titulo::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .depoimentos__numero {
+    font-size: 14px;
+    color: #b5242f;
+  }
+  .depoimentos__grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+  }
+  .depoimento {
+    margin: 0;
+    padding: 32px 28px;
+    border: 1px solid #d9d3c7;
+    background: #fff;
+  }
+  .depoimento__estrelas {
+    margin-bottom: 16px;
+    color: #b5242f;
+    letter-spacing: 0.2em;
+  }
+  .depoimento__texto {
+    margin: 0 0 24px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1a1a1a;
+  }
+  .depoimento__autor {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7a7468;
+  }
+</style>
   </div>
 </div>
 {% endblock %}
