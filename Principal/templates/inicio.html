@@ -139,6 +139,44 @@
   </div>
 </section>
 
+{# ---------- 04 Perguntas Frequentes ---------- #}
+<section class="secao" id="perguntas-frequentes">
+  <div class="container">
+    <header class="cab-secao revelar">
+      <span class="cab-nun">04</span>
+      <h2>Perguntas frequentes</h2>
+      <span class="cab-linha"></span>
+    </header>
+
+    <div class="faq revelar">
+      <details class="opcionais pb-3">
+        <summary>Quais regiões vocês atendem?</summary>
+        <p class="mt-3 mb-0">Entregamos em Jardim América e bairros vizinhos, em um raio de até 5 km do restaurante.</p>
+      </details>
+
+      <details class="opcionais pb-3">
+        <summary>Qual é a taxa de entrega?</summary>
+        <p class="mt-3 mb-0">A taxa varia de R$ 5,00 a R$ 12,00, conforme a distância. O valor exato aparece antes de você finalizar o pedido.</p>
+      </details>
+
+      <details class="opcionais pb-3">
+        <summary>Quanto tempo leva a entrega?</summary>
+        <p class="mt-3 mb-0">Em média, de 40 a 60 minutos. Em horários de pico, esse tempo pode aumentar um pouco.</p>
+      </details>
+
+      <details class="opcionais pb-3">
+        <summary>Quais formas de pagamento são aceitas?</summary>
+        <p class="mt-3 mb-0">Aceitamos Pix, cartões de crédito e débito e dinheiro na entrega. Pelo iFood e 99Food valem as formas de pagamento de cada aplicativo.</p>
+      </details>
+
+      <details class="opcionais pb-3">
+        <summary>Posso retirar o pedido no restaurante?</summary>
+        <p class="mt-3 mb-0">Sim. Faça o pedido com antecedência e retire no balcão, sem pagar taxa de entrega.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 {# ---------- Fecho ---------- #}
 <section class="fecho">
   <div class="container">
@@ -157,95 +195,6 @@
   </div>
 </section>
 
-<!-- Perguntas frequentes -->
-<section class="faq" id="perguntas-frequentes">
-  <div class="faq__container">
-    <h2 class="faq__titulo">
-      <span class="faq__numero">04</span> Perguntas frequentes
-    </h2>
-
-    <details class="faq__item">
-      <summary>Quais regiões vocês atendem?</summary>
-      <p>Entregamos em Jardim América e bairros vizinhos, em um raio de até 5 km do restaurante.</p>
-    </details>
-
-    <details class="faq__item">
-      <summary>Qual é a taxa de entrega?</summary>
-      <p>A taxa varia de R$ 5,00 a R$ 12,00, conforme a distância. O valor exato aparece antes de você finalizar o pedido.</p>
-    </details>
-
-    <details class="faq__item">
-      <summary>Quanto tempo leva a entrega?</summary>
-      <p>Em média, de 40 a 60 minutos. Em horários de pico, esse tempo pode aumentar um pouco.</p>
-    </details>
-
-    <details class="faq__item">
-      <summary>Quais formas de pagamento são aceitas?</summary>
-      <p>Aceitamos Pix, cartões de crédito e débito e dinheiro na entrega. Pelo iFood e 99Food valem as formas de pagamento de cada aplicativo.</p>
-    </details>
-
-    <details class="faq__item">
-      <summary>Posso retirar o pedido no restaurante?</summary>
-      <p>Sim. Faça o pedido com antecedência e retire no balcão, sem pagar taxa de entrega.</p>
-    </details>
-  </div>
-</section>
-
-<style>
-  .faq {
-    padding: 96px 24px;
-  }
-  .faq__container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .faq__titulo {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin: 0 0 40px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 36px;
-    font-weight: 400;
-    color: #1a1a1a;
-  }
-  .faq__titulo::after {
-    content: "";
-    flex: 1;
-    border-bottom: 1px solid #1a1a1a;
-  }
-  .faq__numero {
-    font-size: 14px;
-    color: #b5242f;
-  }
-  .faq__item {
-    border-bottom: 1px solid #d9d3c7;
-    padding: 20px 0;
-  }
-  .faq__item summary {
-    cursor: pointer;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 20px;
-    color: #1a1a1a;
-    list-style: none;
-  }
-  .faq__item summary::-webkit-details-marker {
-    display: none;
-  }
-  .faq__item summary::after {
-    content: "+";
-    float: right;
-    color: #b5242f;
-  }
-  .faq__item[open] summary::after {
-    content: "−";
-  }
-  .faq__item p {
-    margin: 16px 0 0;
-    line-height: 1.7;
-    color: #5c574d;
-  }
-</style>
 
 {% endblock %}
 
@@ -325,6 +274,18 @@
     });
     document.body.classList.add('com-previa');
   }
+
+  // 4. Resposta do FAQ sobe e aparece a cada vez que a pergunta é aberta
+  document.querySelectorAll('#perguntas-frequentes details').forEach(function (d) {
+    d.querySelector('summary').addEventListener('click', function () {
+      var resposta = d.querySelector('p');
+      if (d.open || reduzir || !resposta.animate) return; // só quando vai abrir
+      resposta.animate(
+        [{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 900, easing: 'cubic-bezier(.2, .7, .1, 1)' }
+      );
+    });
+  });
 })();
 
 </script>
