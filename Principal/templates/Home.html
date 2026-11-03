@@ -32,55 +32,88 @@
     {% block content %}{% endblock %}
     </main>
 
-    <footer class="rodape">
-      <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <span class="d-flex align-items-center gap-3"><span class="hanko" aria-hidden="true">寿</span>SushiBom</span>
-        <span>Jardim América · Rio de Janeiro</span>
+    <footer>
+      {# ---------- Logo ---------- #}
+      <div class="rodape">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <span class="d-flex align-items-center gap-3"><span class="hanko" aria-hidden="true">寿</span>SushiBom</span>
+          <span>Jardim América · Rio de Janeiro</span>
+        </div>
+      </div>
+
+      {# ---------- Links rápidos ---------- #}
+      <div class="pt-2 pb-4">
+        <div class="container">
+          <div class="row g-4 gx-lg-5">
+
+            <div class="col-lg-3">
+              <p class="text-body-secondary">Tradição japonesa numa linguagem contemporânea, urbana e elegante.</p>
+              <p class="small mb-0">Peça também pelo
+                <a href="https://www.ifood.com.br/" target="_blank" rel="noopener noreferrer">iFood</a> ·
+                <a href="https://www.99app.com/" target="_blank" rel="noopener noreferrer">99Food</a>
+              </p>
+            </div>
+
+            <nav class="col-6 col-lg-2" aria-label="Cardápio">
+              <span class="etiqueta">Cardápio</span>
+              <ul class="list-unstyled d-grid gap-2 mb-0">
+                <li><a href="{% url 'sushi' %}">Sushi</a></li>
+                <li><a href="{% url 'sashimi' %}">Sashimi</a></li>
+                <li><a href="{% url 'temaki' %}">Temaki</a></li>
+                <li><a href="{% url 'sobremesas' %}">Sobremesas</a></li>
+                <li><a href="{% url 'bebidas' %}">Bebidas</a></li>
+              </ul>
+            </nav>
+
+            <nav class="col-6 col-lg-3" aria-label="Dúvidas e links rápidos">
+              <span class="etiqueta">Dúvidas? Comece aqui</span>
+              <ul class="list-unstyled d-grid gap-2 mb-0">
+                <li><a href="{% url 'home' %}#perguntas-frequentes">Perguntas frequentes</a></li>
+                <li><a href="{% url 'mostracarrinho' %}">Meu carrinho</a></li>
+                {% if not user.is_authenticated %}
+                  <li><a href="{% url 'logar' %}">Entrar</a></li>
+                  <li><a href="{% url 'cadastrar_cliente' %}">Criar conta</a></li>
+                {% endif %}
+                <li><a href="{% url 'historia' %}">Nossa história</a></li>
+                <li><a href="{% url 'contato' %}">Contatos e mapa</a></li>
+              </ul>
+            </nav>
+
+            <div class="col-lg-4">
+              <span class="etiqueta">Atendimento</span>
+              <ul class="list-unstyled d-grid gap-2 mb-0">
+                <li><a href="https://wa.me/5521900000000?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido." target="_blank" rel="noopener noreferrer">Atendimento no WhatsApp</a></li>
+                <li><a href="https://www.instagram.com/sushibom.exemplo" target="_blank" rel="noopener noreferrer">Instagram · @sushibom.exemplo</a></li>
+                <li><a href="mailto:contato@sushibom.com.br">contato@sushibom.com.br</a></li>
+                <li><a href="tel:+552130000000">(21) 3000-0000</a></li>
+              </ul>
+              <hr class="my-3">
+              <p class="small text-body-secondary mb-0">Terça a domingo · 18h às 23h30<br>Segunda-feira: fechado</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contato rápido: WhatsApp e Instagram -->
+      <div class="container d-flex flex-column flex-sm-row justify-content-center gap-3 pt-3 pb-5">
+        <a href="https://wa.me/5521900000000?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido."
+          class="btn btn-contorno"
+          target="_blank"
+          rel="noopener noreferrer">
+          WhatsApp
+        </a>
+        <a href="https://www.instagram.com/sushibom.exemplo"
+          class="btn btn-contorno"
+          target="_blank"
+          rel="noopener noreferrer">
+          Instagram
+        </a>
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     {% block scripts %}{% endblock %}
-    <!-- Contato rápido: WhatsApp e Instagram -->
-<div class="contato-rapido">
-  <a href="https://wa.me/5521900000000?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido."
-     class="contato-rapido__link"
-     target="_blank"
-     rel="noopener noreferrer">
-    WhatsApp
-  </a>
-  <a href="https://www.instagram.com/sushibom.exemplo"
-     class="contato-rapido__link"
-     target="_blank"
-     rel="noopener noreferrer">
-    Instagram
-  </a>
-</div>
 
-<style>
-  .contato-rapido {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    max-width: 1100px;
-    margin: 0 auto 48px;
-    padding: 0 24px;
-  }
-  .contato-rapido__link {
-    padding: 12px 24px;
-    border: 1px solid #1a1a1a;
-    color: #1a1a1a;
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-  .contato-rapido__link:hover {
-    background: #1a1a1a;
-    color: #fff;
-  }
-</style>
   </body>
 </html>
