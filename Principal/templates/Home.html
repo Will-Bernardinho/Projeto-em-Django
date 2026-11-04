@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}SushiBom · Culinária japonesa{% endblock %}</title>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('tema'); } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-bs-theme', t);
+      })();
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +23,37 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'principal/favicon/favicon-16.png' %}">
     <link rel="apple-touch-icon" href="{% static 'principal/favicon/apple-touch-icon.png' %}">
     <link rel="stylesheet" href="{% static 'principal/style.css' %}">
+    <style>
+      [data-bs-theme="dark"] {
+        --washi: #171512;
+        --washi-deep: #211e1a;
+        --sumi: #ece6d9;
+        --nezumi: #a39d90;
+        --linha: #38332b;
+        --shu: #d1424a;
+        --shu-escuro: #b3272d;
+
+        --bs-body-bg: #171512;
+        --bs-body-color: #ece6d9;
+        --bs-border-color: #38332b;
+        --bs-link-color: #ece6d9;
+        --bs-link-color-rgb: 236, 230, 217;
+        --bs-link-hover-color: #d1424a;
+        --bs-link-hover-color-rgb: 209, 66, 74;
+      }
+
+      [data-bs-theme="dark"] .topo { background: rgba(23, 21, 18, .92); }
+      [data-bs-theme="dark"] .painel { background: rgba(255, 255, 255, .04); }
+      [data-bs-theme="dark"] .capa { background: #0e0d0b; }
+      [data-bs-theme="dark"] .navbar-toggler-icon { filter: invert(1); }
+
+      /* Ícone do botão de tema: contorno no claro, preenchido no escuro */
+      .icone-tema { width: 1.25rem; height: 1.25rem; display: block; }
+      .icone-tema-escuro { display: none; }
+      [data-bs-theme="dark"] .icone-tema-claro { display: none; }
+      [data-bs-theme="dark"] .icone-tema-escuro { display: block; }
+    </style>
+
     <script>document.documentElement.classList.add('js')</script>
   </head>
   <body>
@@ -113,6 +152,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    {# Botão de modo escuro #}
+    <script>
+      (function () {
+        var btn = document.getElementById('btnTema');
+        var html = document.documentElement;
+        if (!btn) return;
+
+        function atualizar() {
+          var escuro = html.getAttribute('data-bs-theme') === 'dark';
+          btn.setAttribute('aria-pressed', escuro);
+        }
+
+        btn.addEventListener('click', function () {
+          var novo = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+          html.setAttribute('data-bs-theme', novo);
+          try { localStorage.setItem('tema', novo); } catch (e) {}
+          atualizar();
+        });
+
+        atualizar();
+      })();
+    </script>
+
     {% block scripts %}{% endblock %}
 
   </body>
