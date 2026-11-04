@@ -21,13 +21,13 @@ Site de pedidos de um restaurante de culinária japonesa, desenvolvido em **Djan
 
 ## Visualização do Site
 
-<img width="1365" height="945" alt="print-shushibom-1" src="https://github.com/user-attachments/assets/e9fdfb11-8e1d-448a-a82d-9f4350c2dd79" />
-<img width="1365" height="945" alt="print-sushibom-2" src="https://github.com/user-attachments/assets/a6101aa9-6990-4c9d-bc4c-c28deac306ee" />
-<img width="1365" height="945" alt="print-shushibom-3" src="https://github.com/user-attachments/assets/ab128c96-1456-4b15-b25d-9c5eeab3ed70" />
-<img width="1365" height="945" alt="print-shushibom-4" src="https://github.com/user-attachments/assets/9083e45e-49b7-40de-baa0-7e7b7db898a5" />
-<img width="1365" height="945" alt="print-shushibom-5" src="https://github.com/user-attachments/assets/ac8a63d1-2d0f-4a9a-95df-e36b766feef8" />
-<img width="1365" height="493" alt="print-shushibom-6" src="https://github.com/user-attachments/assets/9486573f-eabe-4e93-a172-3d71c14b77eb" />
-
+<table>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/e9fdfb11-8e1d-448a-a82d-9f4350c2dd79" width="300"><br><sub>Tela Inicial</sub></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/eaf39a89-6cdd-47e8-a43d-9297722942cd" width="300"><br><sub>Carrinho</sub></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/5cb4dda2-44c1-48de-9f36-f61a6d44a993" width="300"><br><sub>Contatos</sub></td>
+  </tr>
+</table>
 
 ## Como executar
 
