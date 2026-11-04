@@ -24,13 +24,10 @@ Site de pedidos de um restaurante de culinária japonesa, desenvolvido em **Djan
 <table>
   <tr>
     <td align="center"><img src="https://github.com/user-attachments/assets/e9fdfb11-8e1d-448a-a82d-9f4350c2dd79" width="300"><br><sub>Tela Inicial</sub></td>
-    <td align="center"><img src="./images/carrinho.png" width="300"><br><sub>Carrinho</sub></td>
-    <td align="center"><img src="./images/contatos.png" width="300"><br><sub>Contatos</sub></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/eaf39a89-6cdd-47e8-a43d-9297722942cd" width="300"><br><sub>Carrinho</sub></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/5cb4dda2-44c1-48de-9f36-f61a6d44a993" width="300"><br><sub>Contatos</sub></td>
   </tr>
 </table>
-
-<img width="1365" height="945" alt="print-shushibom-3" src="https://github.com/user-attachments/assets/ab128c96-1456-4b15-b25d-9c5eeab3ed70" />
-
 
 ## Como executar
 
